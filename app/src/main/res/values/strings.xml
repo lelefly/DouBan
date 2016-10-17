@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DouBan</string>
+    <string name="douban_item">Film</string>
 </resources>
