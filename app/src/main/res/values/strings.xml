@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DouBan</string>
     <string name="douban_item">Film</string>
+    <string name="tab_all">ALL</string>
 </resources>

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="?attr/widgetBackground"
     android:orientation="vertical">
 
     <ScrollView
@@ -12,12 +14,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <CheckedTextView
-            style="@style/AppWidget.Nav"
-            android:id="@+id/ctv_douban"
-            android:drawableLeft="@drawable/douban_selector"
-            android:text="@string/douban_item"
-            />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/nav_header_bg"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                />
+
+            <CheckedTextView
+                android:id="@+id/ctv_douban"
+                style="@style/AppWidget.Nav"
+                android:drawableLeft="@drawable/douban_selector"
+                android:text="@string/douban_item" />
+
+            <CheckedTextView
+                android:id="@+id/ctv_tudou"
+                style="@style/AppWidget.Nav"
+                android:drawableLeft="@drawable/douban_selector"
+                android:text="@string/tudou" />
 
 
         </LinearLayout>
