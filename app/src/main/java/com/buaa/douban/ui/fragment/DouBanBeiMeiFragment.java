@@ -13,14 +13,14 @@ import com.buaa.douban.R;
 /**
  * Created by Administrator on 2016/10/18.
  */
-public class DouBanHotFragment extends Fragment{
+public class DouBanBeiMeiFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.douban_film_layout,null);
         TextView textView = (TextView) view.findViewById(R.id.tv);
-        textView.setText("正在热映");
+        textView.setText("北美票房榜");
         return view;
     }
 }

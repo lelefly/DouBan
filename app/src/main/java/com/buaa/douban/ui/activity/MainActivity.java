@@ -6,10 +6,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.SimpleDrawerListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.buaa.douban.R;
 import com.buaa.douban.ui.fragment.DouBanFragment;
@@ -37,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
     @BindViews({R.id.ctv_douban,R.id.ctv_tudou})
     protected List<CheckedTextView> navItemList;
 
+    private SearchView searchView;
+
     private List<Fragment> fragmentList;
     private FragmentManager fragmentManager;
+    private Fragment tempFragment;
+    private String[] titles = new String[]{"豆瓣","土豆"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,34 @@ public class MainActivity extends AppCompatActivity {
         fragmentList = new ArrayList<>();
         fragmentManager = getFragmentManager();
         initFragment();
+        setFragment(0);
+        dl_main.addDrawerListener(drawerListener);
+        initSearchView();
+
+    }
+
+    private void initSearchView() {
+        searchView = (SearchView) tl_main.getMenu().findItem(R.id.search).getActionView();
+        searchView.setQueryHint("搜索…");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
     }
 
     private void initFragment() {
@@ -56,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(douBanFragment);
         TuDouFragment tuDouFragment = new TuDouFragment();
         fragmentList.add(tuDouFragment);
+        fragmentManager.beginTransaction().add(R.id.fl_content,douBanFragment).add(R.id.fl_content,tuDouFragment).hide(tuDouFragment).commitAllowingStateLoss();
+        tempFragment = douBanFragment;
     }
 
     private void setFragment(int position){
-        fragmentManager.beginTransaction().replace(R.id.fl_content,fragmentList.get(position)).commitAllowingStateLoss();
+        fragmentManager.beginTransaction().hide(tempFragment).show(fragmentList.get(position)).commitAllowingStateLoss();
+        tempFragment = fragmentList.get(position);
+        tl_main.setTitle(titles[position]);
     }
     @OnClick({R.id.ctv_douban,R.id.ctv_tudou})
     public void OnNavItemClick(CheckedTextView checkedTextView){

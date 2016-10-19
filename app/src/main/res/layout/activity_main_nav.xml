@@ -27,7 +27,9 @@
                 android:id="@+id/ctv_douban"
                 style="@style/AppWidget.Nav"
                 android:drawableLeft="@drawable/douban_selector"
-                android:text="@string/douban_item" />
+                android:text="@string/douban_item"
+                android:checked="true"
+                />
 
             <CheckedTextView
                 android:id="@+id/ctv_tudou"
