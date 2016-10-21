@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
@@ -48,28 +49,38 @@ public class MainActivity extends AppCompatActivity {
     private Fragment tempFragment;
     private String[] titles = new String[]{"豆瓣","土豆"};
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        tl_main.setNavigationOnClickListener(new NavigationOpenClickListener(dl_main));
+        setSupportActionBar(tl_main);
         fragmentList = new ArrayList<>();
         fragmentManager = getFragmentManager();
         initFragment();
         setFragment(0);
         dl_main.addDrawerListener(drawerListener);
-        initSearchView();
+        tl_main.setNavigationOnClickListener(new NavigationOpenClickListener(dl_main));
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                Toast.makeText(MainActivity.this, "搜索!!!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initSearchView() {
-        searchView = (SearchView) tl_main.getMenu().findItem(R.id.search).getActionView();
-        searchView.setQueryHint("搜索…");
+        searchView.setQueryHint("电影");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"搜索"+query,Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -84,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        return true;
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        initSearchView();
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void initFragment() {
@@ -101,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         tempFragment = fragmentList.get(position);
         tl_main.setTitle(titles[position]);
     }
+
     @OnClick({R.id.ctv_douban,R.id.ctv_tudou})
     public void OnNavItemClick(CheckedTextView checkedTextView){
         for(CheckedTextView view : navItemList){
@@ -108,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
         dl_main.closeDrawers();
     }
+
     private final DrawerLayout.DrawerListener drawerListener = new SimpleDrawerListener() {
         @Override
         public void onDrawerClosed(View drawerView) {
