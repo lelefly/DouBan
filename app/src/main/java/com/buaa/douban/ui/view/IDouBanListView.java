@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface IDouBanListView {
     void onLoading();
-    void onLoadSuccess(List<DouBanInfo> list);
-    void onLoadMore(List<DouBanInfo> list);
+    void onLoadingFailed();
+    void onLoadSuccess(DouBanInfo info);
+    void onLoadMore(DouBanInfo info);
 }
