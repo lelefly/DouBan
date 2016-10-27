@@ -30,7 +30,7 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.douban_film_layout,null);
         TextView textView = (TextView) view.findViewById(R.id.tv);
-        textView.setText("正在热映");
+        textView.setText("www.baidu.com");
         douBanListPresenter = new DouBanListPresenter(this);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override

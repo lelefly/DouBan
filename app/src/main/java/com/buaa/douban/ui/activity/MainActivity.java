@@ -2,12 +2,14 @@ package com.buaa.douban.ui.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.SimpleDrawerListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Fragment> fragmentList;
     private FragmentManager fragmentManager;
-    private Fragment tempFragment;
+    private int tempPosition;
     private String[] titles = new String[]{"豆瓣","土豆"};
+
 
 
     @Override
@@ -75,12 +78,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("position", tempPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        int position = savedInstanceState.getInt("position");
+        setFragment(position);
+        setNavChecked(position);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
     private void initSearchView() {
         searchView.setQueryHint("电影");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(MainActivity.this,"搜索"+query,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "搜索" + query, Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -106,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
         TuDouFragment tuDouFragment = new TuDouFragment();
         fragmentList.add(tuDouFragment);
         fragmentManager.beginTransaction().add(R.id.fl_content,douBanFragment).add(R.id.fl_content,tuDouFragment).hide(tuDouFragment).commitAllowingStateLoss();
-        tempFragment = douBanFragment;
+        tempPosition = 1;
     }
 
     private void setFragment(int position){
-        fragmentManager.beginTransaction().hide(tempFragment).show(fragmentList.get(position)).commitAllowingStateLoss();
-        tempFragment = fragmentList.get(position);
+        fragmentManager.beginTransaction().hide(fragmentList.get(tempPosition)).show(fragmentList.get(position)).commitAllowingStateLoss();
+        tempPosition = position;
         tl_main.setTitle(titles[position]);
     }
 
@@ -148,6 +166,16 @@ public class MainActivity extends AppCompatActivity {
             super.onDrawerOpened(drawerView);
         }
     };
+
+    private void setNavChecked(int position){
+        for(int i = 0;i<navItemList.size();i++){
+            if(i==position){
+                navItemList.get(i).setChecked(true);
+            }else{
+                navItemList.get(i).setChecked(false);
+            }
+        }
+    }
 
 
 
