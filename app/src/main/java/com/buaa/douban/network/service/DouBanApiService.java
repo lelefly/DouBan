@@ -1,8 +1,6 @@
 package com.buaa.douban.network.service;
 
-import com.buaa.douban.model.entity.DouBanInfo;
-
-import java.util.List;
+import com.buaa.douban.model.douban.DouBanInfo;
 
 import retrofit2.http.GET;
 import rx.Observable;

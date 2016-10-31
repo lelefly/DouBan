@@ -11,12 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buaa.douban.R;
-import com.buaa.douban.model.entity.DouBanInfo;
+import com.buaa.douban.model.douban.DouBanInfo;
 import com.buaa.douban.presenter.contract.IDouBanListPresenter;
 import com.buaa.douban.presenter.implement.DouBanListPresenter;
 import com.buaa.douban.ui.view.IDouBanListView;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/10/18.
@@ -54,7 +52,7 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
     @Override
     public void onLoadSuccess(DouBanInfo info) {
         if(info!=null){
-            Log.i("testlog",info.total+"");
+            Log.i("testlog",info.subjects.get(0).images.medium+"");
         }
     }
 

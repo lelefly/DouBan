@@ -1,4 +1,4 @@
-package com.buaa.douban.model.entity;
+package com.buaa.douban.model.douban;
 
 import java.io.Serializable;
 import java.util.List;

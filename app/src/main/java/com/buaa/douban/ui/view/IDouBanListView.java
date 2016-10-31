@@ -1,8 +1,6 @@
 package com.buaa.douban.ui.view;
 
-import com.buaa.douban.model.entity.DouBanInfo;
-
-import java.util.List;
+import com.buaa.douban.model.douban.DouBanInfo;
 
 /**
  * Created by admin on 2016/10/25.
