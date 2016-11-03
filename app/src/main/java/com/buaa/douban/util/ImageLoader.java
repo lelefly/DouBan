@@ -1,11 +1,14 @@
 package com.buaa.douban.util;
 
 import android.app.ActivityManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.LruCache;
+
+import com.buaa.douban.MyApplication;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -61,8 +64,8 @@ public class ImageLoader {
 
         mPoolThread.start();
 
-        long maxMemory = ActivityManager.get
-        long cacheMemory = maxMemory/8;
+        int maxMemory = ((ActivityManager)MyApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
+        int cacheMemory = maxMemory/8;
     }
 
     public static ImageLoader getInstance(){

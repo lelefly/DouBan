@@ -69,7 +69,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         mMaxFooterType = Integer.MAX_VALUE;
         mMinFooterType = mMaxFooterType - 100;
         loadView = mInflater.inflate(R.layout.loadmore_view,null);
-        ButterKnife.bind(loadView);
+        ButterKnife.bind(this,loadView);
     }
 
     public final void addHeaderView(View view){

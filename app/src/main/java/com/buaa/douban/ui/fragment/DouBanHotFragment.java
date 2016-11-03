@@ -3,6 +3,7 @@ package com.buaa.douban.ui.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
 
     private DouBanHotAdapter adapter;
 
+    private int start;
 
     @Nullable
     @Override
@@ -45,7 +47,7 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                douBanListPresenter.loadHotData();
+                douBanListPresenter.loadHotData(start);
             }
         });
         return view;
@@ -58,6 +60,14 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
         rvw_hot.enableLoadMore(true);
         adapter = new DouBanHotAdapter(getActivity());
         rvw_hot.setAdapter(adapter);
+        rvw_hot.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                start = 0;
+                rvw_hot.enableLoadMore(true);
+                douBanListPresenter.loadHotData(start);
+            }
+        });
     }
 
     @Override

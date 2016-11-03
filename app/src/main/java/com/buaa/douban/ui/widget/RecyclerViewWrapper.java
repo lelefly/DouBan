@@ -35,6 +35,7 @@ public class RecyclerViewWrapper extends FrameLayout{
     private int mPreviousTotal = 0;
     private int mFirstVisibleItem;
 
+
     private OnLoadMoreListener onLoadMoreListener;
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
 
@@ -74,7 +75,6 @@ public class RecyclerViewWrapper extends FrameLayout{
     public void enableRefresh(boolean enable) {
         if (enable != srl_base.isEnabled()) {
             srl_base.setEnabled(enable);
-            if (!enable) srl_base.setRefreshing(false);
         }
     }
 
@@ -139,7 +139,9 @@ public class RecyclerViewWrapper extends FrameLayout{
                     break;
             }
                 if((mTotalItemCount - mVisibleItemCount) <= mFirstVisibleItem){
-                    onLoadMoreListener.loadMore();
+                    if (onLoadMoreListener != null) {
+                        onLoadMoreListener.loadMore();
+                    }
                 }
         }
     };

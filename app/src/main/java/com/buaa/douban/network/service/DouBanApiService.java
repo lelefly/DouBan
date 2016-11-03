@@ -3,6 +3,7 @@ package com.buaa.douban.network.service;
 import com.buaa.douban.model.douban.DouBanInfo;
 
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -10,6 +11,6 @@ import rx.Observable;
  */
 public interface DouBanApiService {
     @GET("in_theaters")
-    Observable<DouBanInfo> getHot();
+    Observable<DouBanInfo> getHot(@Query("start")Integer start,@Query("count")Integer count);
 
 }

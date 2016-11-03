@@ -5,7 +5,7 @@ package com.buaa.douban.presenter.contract;
  */
 
 public interface IDouBanListPresenter {
-    void loadHotData();
+    void loadHotData(int start);
     void loadComingData(int start);
     void loadTopData(int start);
 }
