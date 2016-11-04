@@ -14,11 +14,15 @@ import android.widget.Toast;
 
 import com.buaa.douban.R;
 import com.buaa.douban.model.douban.DouBanInfo;
+import com.buaa.douban.model.douban.DouBanItemInfo;
 import com.buaa.douban.presenter.contract.IDouBanListPresenter;
 import com.buaa.douban.presenter.implement.DouBanListPresenter;
 import com.buaa.douban.ui.adapter.DouBanHotAdapter;
 import com.buaa.douban.ui.view.IDouBanListView;
 import com.buaa.douban.ui.widget.RecyclerViewWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,26 +40,22 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
 
     private int start;
 
+    private List<DouBanItemInfo> list;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.douban_film_layout,null);
         ButterKnife.bind(this, view);
-        TextView textView = (TextView) view.findViewById(R.id.tv);
-        textView.setText("www.baidu.com");
         douBanListPresenter = new DouBanListPresenter(this);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                douBanListPresenter.loadHotData(start);
-            }
-        });
+        douBanListPresenter.loadHotData(start);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        list = new ArrayList<>();
         rvw_hot.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvw_hot.enableLoadMore(true);
         adapter = new DouBanHotAdapter(getActivity());
@@ -63,8 +63,16 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
         rvw_hot.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                list.clear();
                 start = 0;
                 rvw_hot.enableLoadMore(true);
+                douBanListPresenter.loadHotData(start);
+            }
+        });
+        rvw_hot.setOnLoadMoreListener(new RecyclerViewWrapper.OnLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                start +=10;
                 douBanListPresenter.loadHotData(start);
             }
         });
@@ -76,15 +84,21 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
     }
 
     @Override
-    public void onLoadingFailed() {
+    public void onLoadingFailed(Throwable e) {
         Toast.makeText(getActivity(),"加载失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLoadSuccess(DouBanInfo info) {
         if(info!=null){
-            Log.i("testlog",info.subjects.get(0).images.medium+"");
-            adapter.setDataList(info.subjects);
+            Log.i("testlog", info.subjects.get(0).images.medium + "");
+            if(info.subjects.size()!=0){
+                list.addAll(info.subjects);
+                adapter.setDataList(list);
+            }else{
+                Toast.makeText(getActivity(),"没有数据", Toast.LENGTH_SHORT).show();
+            }
+            rvw_hot.setRefreshing(false);
         }
     }
 

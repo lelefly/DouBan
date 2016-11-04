@@ -35,7 +35,7 @@ public class DouBanListPresenter implements IDouBanListPresenter{
                        @Override
                        public void onError(Throwable e) {
                            Log.i("testlog",e.toString());
-                           douBanListView.onLoadingFailed();
+                           douBanListView.onLoadingFailed(e);
                        }
 
                        @Override

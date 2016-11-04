@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="30dp"
-        android:gravity="center"
-        android:text="豆瓣电影"
-        />
     <com.buaa.douban.ui.widget.RecyclerViewWrapper
         android:id="@+id/rvw_hot"
         android:layout_width="match_parent"
