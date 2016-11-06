@@ -19,8 +19,6 @@ public class DouBanTop250Fragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.douban_film_layout,null);
-        TextView textView = (TextView) view.findViewById(R.id.tv);
-        textView.setText("Top250");
         return view;
     }
 }

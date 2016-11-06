@@ -38,7 +38,7 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
 
     private DouBanHotAdapter adapter;
 
-    private int start;
+    private int start,total;
 
     private List<DouBanItemInfo> list;
 
@@ -57,15 +57,17 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
         super.onViewCreated(view, savedInstanceState);
         list = new ArrayList<>();
         rvw_hot.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvw_hot.enableLoadMore(true);
         adapter = new DouBanHotAdapter(getActivity());
         rvw_hot.setAdapter(adapter);
+        rvw_hot.enableLoadMore(false);
         rvw_hot.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                rvw_hot.setRefreshing(true);
+                rvw_hot.enableLoadMore(false);
+                adapter.setLoading();
                 list.clear();
                 start = 0;
-                rvw_hot.enableLoadMore(true);
                 douBanListPresenter.loadHotData(start);
             }
         });
@@ -73,7 +75,12 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
             @Override
             public void loadMore() {
                 start +=10;
-                douBanListPresenter.loadHotData(start);
+                if(start<total) {
+                    douBanListPresenter.loadHotData(start);
+                }else{
+                    adapter.setLoadNoData();
+                    Toast.makeText(getActivity(),"没有数据", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -91,13 +98,12 @@ public class DouBanHotFragment extends Fragment implements IDouBanListView{
     @Override
     public void onLoadSuccess(DouBanInfo info) {
         if(info!=null){
-            Log.i("testlog", info.subjects.get(0).images.medium + "");
+            total = info.total;
             if(info.subjects.size()!=0){
                 list.addAll(info.subjects);
                 adapter.setDataList(list);
-            }else{
-                Toast.makeText(getActivity(),"没有数据", Toast.LENGTH_SHORT).show();
             }
+            rvw_hot.enableLoadMore(true);
             rvw_hot.setRefreshing(false);
         }
     }

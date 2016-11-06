@@ -29,11 +29,14 @@ public class RecyclerViewWrapper extends FrameLayout{
     private LayoutInflater inflater;
 
     private LAYOUT_MANAGER_TYPE layout_manager_type;
-    private int lastVisibleItemPosition;
     private int mVisibleItemCount = 0;
     private int mTotalItemCount = 0;
     private int mPreviousTotal = 0;
     private int mFirstVisibleItem;
+
+    private boolean loading = true;
+
+    private boolean enableLoadMore;
 
 
     private OnLoadMoreListener onLoadMoreListener;
@@ -58,10 +61,7 @@ public class RecyclerViewWrapper extends FrameLayout{
         View rootView = inflater.inflate(R.layout.rvw_layout,this);
         rv_base = (RecyclerView) rootView.findViewById(R.id.rv_base);
         srl_base = (SwipeRefreshLayout) rootView.findViewById(R.id.srl_base);
-//        srl_base.removeView(rv_base);
-//        View verticalView = inflater.inflate(R.layout.recyclerview_vertical, srl_base, true);
-//        rv_base = (RecyclerView) verticalView.findViewById(R.id.rv_recycler);
-//        ButterKnife.bind(rootView);
+        rv_base.addOnScrollListener(onScrollListener);
     }
 
     public void setAdapter(BaseAdapter adapter){
@@ -72,21 +72,14 @@ public class RecyclerViewWrapper extends FrameLayout{
         rv_base.setLayoutManager(layoutManager);
     }
 
-    public void enableRefresh(boolean enable) {
-        if (enable != srl_base.isEnabled()) {
-            srl_base.setEnabled(enable);
+
+    public void enableLoadMore(boolean enable){
+        enableLoadMore = enable;
+        if(enable){
+            loading = true;
         }
     }
 
-    public void enableLoadMore(boolean enable){
-        if(enable){
-            rv_base.addOnScrollListener(onScrollListener);
-        }
-        BaseAdapter adapter = (BaseAdapter) (rv_base.getAdapter());
-        if(adapter!=null) {
-            adapter.enableLoadingMore(enable);
-        }
-    }
 
     public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener){
         onRefreshListener = listener;
@@ -101,6 +94,9 @@ public class RecyclerViewWrapper extends FrameLayout{
     public void setRefreshing(boolean refreshing){
         if(srl_base!=null){
             srl_base.setRefreshing(refreshing);
+        }
+        if(refreshing){
+            mPreviousTotal = 0;
         }
     }
 
@@ -130,19 +126,24 @@ public class RecyclerViewWrapper extends FrameLayout{
                 case LINEAR:
                     mVisibleItemCount = layoutManager.getChildCount();
                     mTotalItemCount = layoutManager.getItemCount();
-                    lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
                     mFirstVisibleItem = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
                     break;
                 case GRID:
-                    lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
                     mFirstVisibleItem = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
                     break;
             }
-                if((mTotalItemCount - mVisibleItemCount) <= mFirstVisibleItem){
-                    if (onLoadMoreListener != null) {
-                        onLoadMoreListener.loadMore();
-                    }
+            if(loading){
+                if(mTotalItemCount > mPreviousTotal){
+                    loading = false;
+                    mPreviousTotal = mTotalItemCount;
                 }
+            }
+            if(enableLoadMore&&!loading&&(mTotalItemCount - mVisibleItemCount) <= mFirstVisibleItem){
+                if (onLoadMoreListener != null) {
+                    onLoadMoreListener.loadMore();
+                    loading = true;
+                }
+            }
         }
     };
 

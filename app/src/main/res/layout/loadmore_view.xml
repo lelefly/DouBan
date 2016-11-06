@@ -3,18 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/pb_loadmore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        />
-
-    <TextView
-        android:id="@+id/tv_no_data"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="没有数据"
-        />
+        android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/pb_loadmore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="没有数据了"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
 </RelativeLayout>

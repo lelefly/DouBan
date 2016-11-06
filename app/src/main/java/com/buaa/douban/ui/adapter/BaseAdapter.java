@@ -42,10 +42,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     private int mMaxHeaderType;
     private int mLastHeaderType;
 
-    private int mMinFooterType;
     private int mMaxFooterType;
 
-    private boolean mEnableLoadingMore;
 
     private View loadView;
 
@@ -67,7 +65,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         mLastHeaderType = mMinHeaderType;
 
         mMaxFooterType = Integer.MAX_VALUE;
-        mMinFooterType = mMaxFooterType - 100;
         loadView = mInflater.inflate(R.layout.loadmore_view,null);
         ButterKnife.bind(this,loadView);
     }
@@ -134,18 +131,21 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         notifyDataSetChanged();
     }
 
-    public void enableLoadingMore(boolean enable) {
-        if (mEnableLoadingMore != enable) {
-            mEnableLoadingMore = enable;
-            setDataList(new LinkedList<T>(mDataList));
-        }
-        if(enable){
-            pb_loadmore.setVisibility(View.VISIBLE);
-            tv_no_data.setVisibility(View.GONE);
-        }else{
-            pb_loadmore.setVisibility(View.GONE);
-            tv_no_data.setVisibility(View.VISIBLE);
-        }
+//    public void enableLoadingMore(boolean enable) {
+//        if (mEnableLoadingMore != enable) {
+//            mEnableLoadingMore = enable;
+//            setDataList(new LinkedList<T>(mDataList));
+//        }
+//    }
+
+    public void setLoadNoData(){
+        pb_loadmore.setVisibility(View.GONE);
+        tv_no_data.setVisibility(View.VISIBLE);
+    }
+
+    public void setLoading(){
+        pb_loadmore.setVisibility(View.VISIBLE);
+        tv_no_data.setVisibility(View.GONE);
     }
 
     @Override
@@ -184,7 +184,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         if(position < getHeadViewCount()){
             return mViewTypeMap.get(mHeadViews.get(position));
         }else{
-            if (mEnableLoadingMore && position == getItemCount() - 1 ) {
+            if (position == getItemCount() - 1 ) {
                 return VIEW_TYPE_FOOTER;
             }  else {
                 return VIEW_TYPE_NORMAL;
@@ -194,10 +194,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemCount() {
-        if(mEnableLoadingMore) {
-            return getHeadViewCount() + mDataList.size() + 1;
-        }else{
-            return getHeadViewCount() + mDataList.size();
-        }
+         return getHeadViewCount() + mDataList.size() + 1;
     }
 }
