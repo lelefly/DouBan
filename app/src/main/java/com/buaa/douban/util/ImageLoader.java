@@ -10,12 +10,19 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.buaa.douban.MyApplication;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,6 +54,8 @@ public class ImageLoader {
 
     private Semaphore mSemaphore = new Semaphore(0);
 
+    private Semaphore mSemaporeThreadPool;
+
     public enum Type
     {
         FIFO , LIFO
@@ -66,6 +75,11 @@ public class ImageLoader {
                     @Override
                     public void handleMessage(Message msg) {
                         mThreadPool.execute(getTask());
+                        try {
+                            mSemaporeThreadPool.acquire();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 };
@@ -89,6 +103,8 @@ public class ImageLoader {
         mThreadPool = Executors.newFixedThreadPool(threadCount);
         mTaskQueue = new LinkedList<Runnable>();
         mType = type;
+
+        mSemaporeThreadPool = new Semaphore(threadCount);
     }
 
     private Runnable getTask() {
@@ -104,14 +120,14 @@ public class ImageLoader {
             synchronized (ImageLoader.class)
             {
                 if(mInstance==null){
-                    mInstance = new ImageLoader(DEFAULT_THREAD_COUNT,Type.LIFO);
+                    mInstance = new ImageLoader(4,Type.LIFO);
                 }
             }
         }
         return mInstance;
     }
 
-    public void loadImage(final String path, final ImageView imageView){
+    public void loadImageFromLoacl(final String path, final ImageView imageView){
         imageView.setTag(path);
 
         if(mUIHandler == null){
@@ -139,6 +155,54 @@ public class ImageLoader {
                     Bitmap bm = decodeBitmap(path,imageSize.width,imageSize.height);
                     addBitmapToCache(path,bm);
                     refreshBitmap(path,imageView,bm);
+
+                    mSemaporeThreadPool.release();
+                }
+            });
+        }
+    }
+
+    public void loadImage(final String path, final ImageView imageView){
+        imageView.setTag(path);
+
+        if(mUIHandler == null){
+            mUIHandler = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    ImageBeanHolder holder = (ImageBeanHolder)msg.obj;
+                    Bitmap bm = holder.bitmap;
+                    ImageView imageView = holder.imageView;
+                    String path = holder.path;
+                    if(imageView.getTag().toString().equals(path)){
+                        imageView.setImageBitmap(bm);
+                    }
+                }
+            };
+        }
+        Bitmap bm = getBitmapFromLruCache(path);
+        if(bm !=null){
+            refreshBitmap(path, imageView, bm);
+        }else{
+            addTask(new Runnable(){
+                @Override
+                public void run() {
+                    ImageSize imageSize = getImageViewSize(imageView);
+                    FileOutputStream fos = null;
+                    InputStream is = null;
+
+                    try {
+                        URL url = new URL(path);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        is = conn.getInputStream();
+                        Log.i("testlog",conn.getResponseCode()+"");
+//                        Bitmap bm = decodeBitmap(is,imageSize.width,imageSize.height);
+                        Bitmap bm = BitmapFactory.decodeStream(is);
+                        addBitmapToCache(path,bm);
+                        refreshBitmap(path,imageView,bm);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mSemaporeThreadPool.release();
                 }
             });
         }
@@ -175,6 +239,19 @@ public class ImageLoader {
         return bitmap;
     }
 
+    private Bitmap decodeBitmap(InputStream is,int width, int height) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is,null,options);
+
+        options.inSampleSize = caculateInSampleSize(options,width,height);
+
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
+
+        return bitmap;
+    }
+
     private int caculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int width = options.outWidth;
         int height = options.outHeight;
@@ -193,7 +270,6 @@ public class ImageLoader {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private ImageSize getImageViewSize(ImageView imageView) {
         ImageSize imageSize = new ImageSize();
 
@@ -207,7 +283,7 @@ public class ImageLoader {
         }
 
         if(width <= 0){
-            width = imageView.getMaxWidth();
+            width = getImageViewFieldValue(imageView,"mMaxWidth");
         }
 
         if(width<=0){
@@ -220,7 +296,7 @@ public class ImageLoader {
         }
 
         if(height <= 0){
-            height = imageView.getMaxHeight();
+            height = getImageViewFieldValue(imageView,"mMaxHeight");
         }
 
         if(height<=0){
@@ -231,6 +307,24 @@ public class ImageLoader {
         imageSize.height = height;
 
         return imageSize;
+    }
+
+    private static int getImageViewFieldValue(Object object,String fieldName){
+        int value = 0;
+
+        try {
+            Field field = ImageView.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            int fieldValue = field.getInt(object);
+            if(fieldValue >0&&fieldValue < Integer.MAX_VALUE){
+                value = fieldValue;
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 
     private synchronized void addTask(Runnable runnable) {
