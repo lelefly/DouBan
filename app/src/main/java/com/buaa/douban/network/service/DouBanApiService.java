@@ -13,4 +13,6 @@ public interface DouBanApiService {
     @GET("in_theaters")
     Observable<DouBanInfo> getHot(@Query("start")Integer start,@Query("count")Integer count);
 
+    @GET("coming_soon")
+    Observable<DouBanInfo> getComing(@Query("start")Integer start,@Query("count")Integer count);
 }

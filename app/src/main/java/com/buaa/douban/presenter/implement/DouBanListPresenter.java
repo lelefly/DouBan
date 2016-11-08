@@ -24,32 +24,52 @@ public class DouBanListPresenter implements IDouBanListPresenter{
     @Override
     public void loadHotData(int start) {
         ApiClient.douBanService.getHot(start,10)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DouBanInfo>() {
-                       @Override
-                       public void onCompleted() {
+                    .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<DouBanInfo>() {
+                                           @Override
+                                           public void onCompleted() {
 
-                       }
+                                           }
 
-                       @Override
-                       public void onError(Throwable e) {
-                           Log.i("testlog",e.toString());
-                           douBanListView.onLoadingFailed(e);
-                       }
+                                           @Override
+                                           public void onError(Throwable e) {
+                                               Log.i("testlog", e.toString());
+                                               douBanListView.onLoadingFailed(e);
+                                           }
 
-                       @Override
-                       public void onNext(DouBanInfo douBanInfo) {
-                            douBanListView.onLoadSuccess(douBanInfo);
-                       }
-                   }
-                );
+                                           @Override
+                                           public void onNext(DouBanInfo douBanInfo) {
+                                               douBanListView.onLoadSuccess(douBanInfo);
+                                           }
+                                       }
+                            );
     }
 
 
     @Override
     public void loadComingData(int start) {
+        ApiClient.douBanService.getComing(start,10)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DouBanInfo>() {
+                               @Override
+                               public void onCompleted() {
 
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   Log.i("testlog",e.toString());
+                                   douBanListView.onLoadingFailed(e);
+                               }
+
+                               @Override
+                               public void onNext(DouBanInfo douBanInfo) {
+                                   douBanListView.onLoadComingSuccess(douBanInfo);
+                               }
+                           }
+                );
     }
 
     @Override

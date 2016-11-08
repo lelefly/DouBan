@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">豆瓣</string>
-    <string name="douban_item">豆瓣电影</string>
-    <string name="tab_all">全部</string>
-    <string name="tudou">土豆视频</string>
-</resources>

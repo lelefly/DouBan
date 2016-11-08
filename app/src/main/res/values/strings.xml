@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">DouBan</string>
-    <string name="douban_item">Film</string>
-    <string name="tab_all">ALL</string>
+    <string name="app_name">豆瓣</string>
+    <string name="douban_item">电影</string>
+    <string name="tudou">土豆</string>
+    <string name="tab_all">全部</string>
+    <string name="douban_collect">%s人收藏</string>
+    <string name="douban_bu">%s部</string>
 </resources>

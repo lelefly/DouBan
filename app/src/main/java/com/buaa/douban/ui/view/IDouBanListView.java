@@ -10,5 +10,6 @@ public interface IDouBanListView {
     void onLoading();
     void onLoadingFailed(Throwable e);
     void onLoadSuccess(DouBanInfo info);
+    void onLoadComingSuccess(DouBanInfo info);
     void onLoadMore(DouBanInfo info);
 }
