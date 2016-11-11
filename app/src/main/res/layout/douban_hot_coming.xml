@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:text="更多 >"
             android:textColor="@color/color_main"
+
             android:textSize="20sp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"

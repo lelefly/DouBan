@@ -1,31 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:star="http://schemas.android.com/apk/res/com.buaa.douban"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:orientation="horizontal">
-    
+    android:orientation="horizontal"
+    android:padding="10dp">
+
     <ImageView
         android:id="@+id/iv_hot"
         android:layout_width="100dp"
         android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/title"
             android:text="qiyibos"
-            />
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/title" />
+
+        <com.buaa.douban.ui.widget.StarRatingView
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            star:ratable="false"
+            star:stat_half="@drawable/frodo_rate_star_small_half_holo_light"
+            star:stat_off="@drawable/frodo_rate_star_small_off_holo_light"
+            star:stat_on="@drawable/frodo_rate_star_small_on_holo_light" />
+
+        <TextView
+            android:id="@+id/tv_dire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="qiyibos"
+            android:textColor="@color/color_gray_text"
+            android:textSize="@dimen/title" />
+
+        <TextView
+            android:id="@+id/tv_cust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="qiyibos"
+            android:textColor="@color/color_gray_text"
+            android:textSize="@dimen/title" />
 
     </LinearLayout>
 
