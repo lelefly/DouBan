@@ -9,8 +9,8 @@
     <ImageView
         android:id="@+id/iv_hot"
         android:layout_width="100dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="wrap_content"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_marginTop="10dp"
             android:text="qiyibos"
             android:textColor="@color/color_gray_text"
-            android:textSize="@dimen/title" />
+            android:textSize="@dimen/body" />
 
         <TextView
             android:id="@+id/tv_cust"
@@ -52,7 +52,7 @@
             android:layout_marginTop="5dp"
             android:text="qiyibos"
             android:textColor="@color/color_gray_text"
-            android:textSize="@dimen/title" />
+            android:textSize="@dimen/body" />
 
     </LinearLayout>
 

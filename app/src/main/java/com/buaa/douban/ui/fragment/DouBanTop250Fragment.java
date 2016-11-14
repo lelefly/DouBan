@@ -18,7 +18,7 @@ public class DouBanTop250Fragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.douban_film_layout,null);
+        View view = inflater.inflate(R.layout.douban_top_layout,null);
         return view;
     }
 }
